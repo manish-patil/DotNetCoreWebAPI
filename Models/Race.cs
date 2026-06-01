@@ -15,7 +15,7 @@
 
     public class Circuit 
     {
-        //public string CircuitId { get; set; } = string.Empty;
+        public string Id { get; set; } = string.Empty;
 
         public string CircuitName { get; set; } = string.Empty;
 
@@ -24,6 +24,8 @@
 
     public class Location
     {
+        public string Id { get; set; } = string.Empty;
+
         public string City { get; set; } = string.Empty;
 
         public string Country { get; set; } = string.Empty;
