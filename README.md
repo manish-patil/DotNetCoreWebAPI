@@ -1,6 +1,4 @@
-Command to create a .gitignore file for dotnet
-
-> dotnet new gitignore
+<img width="958" height="446" alt="image" src="https://github.com/user-attachments/assets/721e9392-09b8-40eb-8359-a5c610ad0270" />
 
 
 To create your initial database migration (create the app.db file) 
@@ -26,3 +24,9 @@ To Remove the last Migration
 > Update-Database -TargetMigration NameOfPreviousMigration
 
 > Remove-Migration
+
+--------------------------
+
+Command to create a .gitignore file for dotnet
+
+> dotnet new gitignore
