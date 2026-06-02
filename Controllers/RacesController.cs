@@ -1,9 +1,7 @@
-﻿using F1API.Models;
+﻿using F1API.DTOs;
+using F1API.Models;
 using F1API.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace F1API.Controllers
 {
@@ -17,7 +15,6 @@ namespace F1API.Controllers
             return await service.GetAllRacesAsync();
         }
 
-        // [HttpGet("{season}/{round}/{raceName}")]
         [HttpGet("{season}/{round}")]
         public async Task<ActionResult<Race?>> GetRaceById(int season, int round)
         {
@@ -42,6 +39,45 @@ namespace F1API.Controllers
             }
 
             return result;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Race?>> AddRace(CreateRaceRequest race)
+        {
+            var newRace = await service.AddRaceAsync(race);
+
+            if (newRace == null)
+            {
+                return BadRequest();
+            }
+
+            return newRace;
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<bool>> UpdateRace(Race race)
+        {
+            bool raceUpdated = await service.UpdateRaceAsync(race);
+
+            if (raceUpdated == false)
+            {
+                return BadRequest();
+            }
+
+            return true;
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<bool>> DeleteRace(int season, int round)
+        {
+            bool raceDeleted = await service.DeleteRaceAsync(season, round);
+
+            if (raceDeleted == false)
+            {
+                return BadRequest();
+            }
+
+            return true;
         }
     }
 }

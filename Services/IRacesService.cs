@@ -1,4 +1,5 @@
-﻿using F1API.Models;
+﻿using F1API.DTOs;
+using F1API.Models;
 
 namespace F1API.Services
 {
@@ -6,12 +7,12 @@ namespace F1API.Services
     {
         Task<List<Race>> GetAllRacesAsync();
 
-        //Task<Race?> GetRaceByIdAsync(int season, int round, string raceName);
         Task<Race?> GetRaceByIdAsync(int season, int round);
 
-        Task<Race> AddRaceAsync();
+        //Task<Race?> AddRaceAsync(Race race);
+        Task<Race?> AddRaceAsync(CreateRaceRequest request);
 
-        Task<bool> UpdateRaceAsync();
+        Task<bool> UpdateRaceAsync(Race race);
 
         Task<bool> DeleteRaceAsync(int season, int round);
     }

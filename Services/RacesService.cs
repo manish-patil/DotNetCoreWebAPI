@@ -1,56 +1,74 @@
-﻿using F1API.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using F1API.Data;
+using F1API.DTOs;
+using F1API.Models;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.EntityFrameworkCore;
 
 namespace F1API.Services
 {
-    public class RacesService : IRacesService
+    public class RacesService(AppDbContext context) : IRacesService
     {
-        static List<Race> races = new List<Race> {
-            new Race {Season = 2026, Round = 1, RaceName = "Australia", RaceDate = new DateTime(2026, 3, 8), Circuit = new Circuit { CircuitName = "Melbourne Grand Prix Circuit", Location = new Location { City ="Melbourne", Country ="Australia"} } },
-            new Race {Season = 2026, Round = 2, RaceName = "China", RaceDate = new DateTime(2026, 3, 15), Circuit = new Circuit { CircuitName = "Shanghai International Circuit", Location = new Location { City = "Shanghai", Country ="China"} } },
-            new Race {Season = 2026, Round = 3, RaceName = "Japan", RaceDate = new DateTime(2026, 3, 29), Circuit = new Circuit { CircuitName = "Suzuka Circuit", Location = new Location { City ="Suzuka", Country ="Japan"} } },
-        };
         public async Task<List<Race>> GetAllRacesAsync()
         {
-            return await Task.FromResult(races);
+            return await context.Races.Include(r => r.Circuit).ThenInclude(c => c.Location).ToListAsync();
         }
 
-        // public async Task<Race?> GetRaceByIdAsync(int season, int round, string raceName)
         public async Task<Race?> GetRaceByIdAsync(int season, int round)
         {
-            Race? race = races.FirstOrDefault(race => race.Season.Equals(season) && race.Round.Equals(round));
+            var race = await context.Races
+                .Include(r => r.Circuit)
+                .ThenInclude(c => c.Location)
+                .FirstOrDefaultAsync(r => r.Season == season && r.Round == round);
 
-            return await Task.FromResult(race);
+            return race;
         }
 
-        public Task<List<Race>> AddRaceAsync()
+        public async Task<Race?> AddRaceAsync(CreateRaceRequest race)
+        {
+            try
+            {
+                var newRace = new Race()
+                {
+                    Season = race.Season,
+                    Round = race.Round,
+                    RaceName = race.RaceName,
+                    RaceDate = race.RaceDate,
+                    CircuitId = race.CircuitId,
+                };
+
+                var _newRace = context.Races.Add(newRace);
+
+                await context.SaveChangesAsync();
+
+                return _newRace.Entity;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error Creating Race");
+            }
+            
+            return null;
+        }
+
+        public Task<bool> UpdateRaceAsync(Race race)
         {
             throw new NotImplementedException();
         }
 
         public async Task<bool> DeleteRaceAsync(int season, int round)
         {
-            Race? race = races.FirstOrDefault(race => race.Season.Equals(season) && race.Round.Equals(round));
+            Race raceToDelete = context.Races.FirstOrDefault(r => r.Season == season && r.Round == round);
 
-            if (race != null)             
+            if (raceToDelete is null)
             {
-                races.Remove(race);
-
-                Console.WriteLine($"Races after delete {races.Count}");
-                return await Task.FromResult(true);
+                return false;
             }
 
-            return await Task.FromResult(false);
-        }
+            context.Races.Remove(raceToDelete);
 
-        public Task<bool> UpdateRaceAsync()
-        {
-            throw new NotImplementedException();
-        }
+            await context.SaveChangesAsync();
 
-        Task<Race> IRacesService.AddRaceAsync()
-        {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

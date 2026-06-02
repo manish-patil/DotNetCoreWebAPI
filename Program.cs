@@ -15,6 +15,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<ICircuitsService, CircuitsService>();
 builder.Services.AddScoped<IRacesService, RacesService>();
 // builder.Services.AddSingleton<IRacesService, RacesService>();
 

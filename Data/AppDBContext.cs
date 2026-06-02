@@ -1,5 +1,6 @@
 ﻿using F1API.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace F1API.Data
 {
@@ -7,12 +8,16 @@ namespace F1API.Data
     {
         public DbSet<Race> Races => Set<Race>();
 
+        public DbSet<Circuit> Circuits => Set<Circuit>();
+
+        public DbSet<Location> Locations => Set<Location>();
+
         // Inside your DbContext:
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Defines a composite primary key using both IDs
             modelBuilder.Entity<Race>()
-                .HasKey(r => new { r.Season, r.Round});
+                // Defines a composite primary key using both IDs
+                .HasKey(r => new { r.Season, r.Round });
         }
     }
 }

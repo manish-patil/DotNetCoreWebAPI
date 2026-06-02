@@ -6,40 +6,43 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace F1API.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialCreate : Migration
+    public partial class InitialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Location",
+                name: "Locations",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     City = table.Column<string>(type: "TEXT", nullable: false),
                     Country = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Location", x => x.Id);
+                    table.PrimaryKey("PK_Locations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Circuit",
+                name: "Circuits",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     CircuitName = table.Column<string>(type: "TEXT", nullable: false),
-                    LocationId = table.Column<string>(type: "TEXT", nullable: true)
+                    LocationId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Circuit", x => x.Id);
+                    table.PrimaryKey("PK_Circuits", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Circuit_Location_LocationId",
+                        name: "FK_Circuits_Locations_LocationId",
                         column: x => x.LocationId,
-                        principalTable: "Location",
-                        principalColumn: "Id");
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,21 +53,22 @@ namespace F1API.Migrations
                     Round = table.Column<int>(type: "INTEGER", nullable: false),
                     RaceName = table.Column<string>(type: "TEXT", nullable: false),
                     RaceDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CircuitId = table.Column<string>(type: "TEXT", nullable: true)
+                    CircuitId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Races", x => new { x.Season, x.Round });
                     table.ForeignKey(
-                        name: "FK_Races_Circuit_CircuitId",
+                        name: "FK_Races_Circuits_CircuitId",
                         column: x => x.CircuitId,
-                        principalTable: "Circuit",
-                        principalColumn: "Id");
+                        principalTable: "Circuits",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Circuit_LocationId",
-                table: "Circuit",
+                name: "IX_Circuits_LocationId",
+                table: "Circuits",
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
@@ -80,10 +84,10 @@ namespace F1API.Migrations
                 name: "Races");
 
             migrationBuilder.DropTable(
-                name: "Circuit");
+                name: "Circuits");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                name: "Locations");
         }
     }
 }

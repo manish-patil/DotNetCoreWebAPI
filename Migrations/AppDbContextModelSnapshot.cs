@@ -19,27 +19,29 @@ namespace F1API.Migrations
 
             modelBuilder.Entity("F1API.Models.Circuit", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("CircuitName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("LocationId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("LocationId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Circuit");
+                    b.ToTable("Circuits");
                 });
 
             modelBuilder.Entity("F1API.Models.Location", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -51,7 +53,7 @@ namespace F1API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Location");
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("F1API.Models.Race", b =>
@@ -62,8 +64,8 @@ namespace F1API.Migrations
                     b.Property<int>("Round")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CircuitId")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CircuitId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("RaceDate")
                         .HasColumnType("TEXT");
@@ -83,7 +85,9 @@ namespace F1API.Migrations
                 {
                     b.HasOne("F1API.Models.Location", "Location")
                         .WithMany()
-                        .HasForeignKey("LocationId");
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Location");
                 });
@@ -92,7 +96,9 @@ namespace F1API.Migrations
                 {
                     b.HasOne("F1API.Models.Circuit", "Circuit")
                         .WithMany()
-                        .HasForeignKey("CircuitId");
+                        .HasForeignKey("CircuitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Circuit");
                 });

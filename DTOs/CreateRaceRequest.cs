@@ -1,6 +1,6 @@
-﻿namespace F1API.Models
+﻿namespace F1API.DTOs
 {
-    public class Race
+    public class CreateRaceRequest
     {
         public int Season { get; set; }
 
@@ -10,9 +10,6 @@
 
         public DateTime RaceDate { get; set; }
 
-        // Foreign Key
         public int CircuitId { get; set; }
-
-        public Circuit Circuit { get; set; } = null!;
     }
 }
